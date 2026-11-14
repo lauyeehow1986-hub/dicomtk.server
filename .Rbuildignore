@@ -1,0 +1,12 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^README\.Rmd$
+^\.github$
+^_pkgdown\.yml$
+^docs$
+^dicomtk\.server\.Rcheck$
+^\.git$
+^\.gitattributes$
+^dev$
+^\.worktrees$
+^data-raw$
