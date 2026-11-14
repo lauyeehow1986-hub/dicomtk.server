@@ -30,11 +30,11 @@ project_create(reg, "nsclc_01", title = "Lung AI")
 #> [1] "broker"
 #> 
 #> $created_at
-#> [1] "2026-11-14T13:46:05Z"
+#> [1] "2026-11-14T15:21:11Z"
 #> 
 project_list(reg)
 #> # A tibble: 1 × 5
 #>   project_id title   deid_profile custody_mode created_at          
 #>   <chr>      <chr>   <chr>        <chr>        <chr>               
-#> 1 nsclc_01   Lung AI ps3.15       broker       2026-11-14T13:46:05Z
+#> 1 nsclc_01   Lung AI ps3.15       broker       2026-11-14T15:21:11Z
 ```

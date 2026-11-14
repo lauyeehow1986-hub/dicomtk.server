@@ -2,6 +2,9 @@
 
 ## RBAC & Audit Trail
 
+8-role OIDC/Keycloak RBAC, JWT verification, project registries, and
+tamper-evident SHA-256 hash-chained audit logs.
+
 - [`server_roles()`](https://lauyeehow1986-hub.github.io/dicomtk.server/reference/server_roles.md)
   :
 
@@ -42,6 +45,9 @@
 
 ## Honest-Broker Custody & Two-Person Re-Identification
 
+Walled-off honest-broker key enclave and dual-approved (honest_broker +
+dpo) re-identification workflow.
+
 - [`broker_enclave_init()`](https://lauyeehow1986-hub.github.io/dicomtk.server/reference/broker_enclave_init.md)
   : Initialize a Walled-Off Honest-Broker Key & Crosswalk Custody
   Enclave
@@ -59,6 +65,9 @@
   Request
 
 ## Async Jobs, Segmentation QA & Active Learning
+
+Asynchronous mirai job queues, 3D segmentation QA (Dice, HD95, surface
+Dice), and MONAI Label active learning.
 
 - [`job_queue_init()`](https://lauyeehow1986-hub.github.io/dicomtk.server/reference/job_queue_init.md)
   : Initialize an Asynchronous or Synchronous Job Queue
@@ -88,6 +97,9 @@
   : Submit a Completed Annotation Label to the Active Learning Pool
 
 ## Event Routing, REST API & Shiny Portal
+
+Event-driven routing rules, plumber REST API endpoints, and Shiny +
+Cornerstone3D/NiiVue clinician portal.
 
 - [`routing_rule()`](https://lauyeehow1986-hub.github.io/dicomtk.server/reference/routing_rule.md)
   : Define an Event-Driven Study Routing Rule
@@ -124,6 +136,9 @@
   Build the `shiny` Server Function for `dicomtk.server`
 
 ## SMART on FHIR, IHE AI & Security
+
+SMART on FHIR v2 PKCE S256 EHR-launch, IHE AIW-I/AIR workflows,
+dual-gated SaMD write-back, CycloneDX 1.5 SBOM, and STRIDE threat model.
 
 - [`smart_discover_config()`](https://lauyeehow1986-hub.github.io/dicomtk.server/reference/smart_discover_config.md)
   : Discover SMART on FHIR v2 Configuration

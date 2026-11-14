@@ -1,9 +1,41 @@
-url: https://lauyeehow1986-hub.github.io/dicomtk.server
+url: https://lauyeehow1986-hub.github.io/dicomtk.server/
 template:
   bootstrap: 5
 
+home:
+  links:
+    - text: Install from R-Universe
+      href: https://lauyeehow1986-hub.r-universe.dev
+    - text: dicomtk (Core & WSI)
+      href: https://lauyeehow1986-hub.github.io/dicomtk/
+    - text: dicomtk.ai (AI & Radiomics)
+      href: https://lauyeehow1986-hub.github.io/dicomtk.ai/
+    - text: dicomtk.fl (Federated Learning)
+      href: https://lauyeehow1986-hub.github.io/dicomtk.fl/
+
+navbar:
+  structure:
+    left: [intro, reference, articles, news, ecosystem]
+    right: [search, github]
+  components:
+    ecosystem:
+      text: Ecosystem
+      menu:
+        - text: "dicomtk (Core & WSI)"
+          href: https://lauyeehow1986-hub.github.io/dicomtk/
+        - text: "dicomtk.ai (AI, Radiomics & NLP)"
+          href: https://lauyeehow1986-hub.github.io/dicomtk.ai/
+        - text: "dicomtk.server (Server, Custody & EHR)"
+          href: https://lauyeehow1986-hub.github.io/dicomtk.server/
+        - text: "dicomtk.fl (Federated Learning & DP)"
+          href: https://lauyeehow1986-hub.github.io/dicomtk.fl/
+        - text: "---"
+        - text: "R-Universe Registry"
+          href: https://lauyeehow1986-hub.r-universe.dev
+
 reference:
-  - title: RBAC & Audit Trail
+  - title: "RBAC & Audit Trail"
+    desc: "8-role OIDC/Keycloak RBAC, JWT verification, project registries, and tamper-evident SHA-256 hash-chained audit logs."
     contents:
       - server_roles
       - server_principal
@@ -18,7 +50,8 @@ reference:
       - project_get
       - project_list
 
-  - title: Honest-Broker Custody & Two-Person Re-Identification
+  - title: "Honest-Broker Custody & Two-Person Re-Identification"
+    desc: "Walled-off honest-broker key enclave and dual-approved (honest_broker + dpo) re-identification workflow."
     contents:
       - broker_enclave_init
       - broker_deid_study
@@ -27,7 +60,8 @@ reference:
       - reid_approve
       - reid_disclose
 
-  - title: Async Jobs, Segmentation QA & Active Learning
+  - title: "Async Jobs, Segmentation QA & Active Learning"
+    desc: "Asynchronous mirai job queues, 3D segmentation QA (Dice, HD95, surface Dice), and MONAI Label active learning."
     contents:
       - job_queue_init
       - job_submit
@@ -43,7 +77,8 @@ reference:
       - active_learning_next
       - active_learning_submit
 
-  - title: Event Routing, REST API & Shiny Portal
+  - title: "Event Routing, REST API & Shiny Portal"
+    desc: "Event-driven routing rules, plumber REST API endpoints, and Shiny + Cornerstone3D/NiiVue clinician portal."
     contents:
       - routing_rule
       - routing_execute
@@ -54,7 +89,8 @@ reference:
       - server_shiny_ui
       - server_shiny_server
 
-  - title: SMART on FHIR, IHE AI & Security
+  - title: "SMART on FHIR, IHE AI & Security"
+    desc: "SMART on FHIR v2 PKCE S256 EHR-launch, IHE AIW-I/AIR workflows, dual-gated SaMD write-back, CycloneDX 1.5 SBOM, and STRIDE threat model."
     contents:
       - smart_discover_config
       - smart_pkce_challenge
@@ -70,6 +106,6 @@ reference:
       - server_threat_model
 
 articles:
-  - title: Guides
+  - title: "Guides"
     contents:
       - honest_broker_and_server

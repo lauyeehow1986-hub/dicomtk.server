@@ -31,7 +31,7 @@ audit_append(lg, actor = "coord_1", action = "deid_ingest", project_id = "p1")
 #> [1] 1
 #> 
 #> $timestamp
-#> [1] "2026-11-14T13:45:37Z"
+#> [1] "2026-11-14T15:20:27Z"
 #> 
 #> $actor
 #> [1] "coord_1"
@@ -49,7 +49,7 @@ audit_append(lg, actor = "coord_1", action = "deid_ingest", project_id = "p1")
 #> [1] "0000000000000000000000000000000000000000000000000000000000000000"
 #> 
 #> $entry_hash
-#> [1] "5197829a86331becf365ddb7bac7a4a9dfc9b0aafb2024ca0e73e6e629417a05"
+#> [1] "2cc8ab13701fab5967cbd107aa22f329203ba5e2d5df23b001eb25cd268037cd"
 #> 
 audit_verify(lg)$passed
 #> [1] TRUE

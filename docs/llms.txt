@@ -27,23 +27,23 @@ Or install from GitHub:
 
 ### 1. 8-Role RBAC & Tamper-Evident Hash-Chained Audit Log
 
-[`library`](https://rdrr.io/r/base/library.html)`(`[`dicomtk.server`](https://lauyeehow1986-hub.github.io/dicomtk.server)`)`` `` ``audit`` ``<-`` ``dicom_audit_log``$``new``(`[`tempfile`](https://rdrr.io/r/base/tempfile.html)`(``fileext ``=`` ``".jsonl"``)``)`` ``rbac`` ``<-`` ``dicom_rbac_policy``$``new``(``)`` `` ``pi_user`` ``<-`` `[`list`](https://rdrr.io/r/base/list.html)`(``user_id ``=`` ``"dr_tan"``, role ``=`` ``"pi"``)`` ``broker_user`` ``<-`` `[`list`](https://rdrr.io/r/base/list.html)`(``user_id ``=`` ``"hb_01"``, role ``=`` ``"honest_broker"``)`` `` ``# RBAC enforces strict separation of duties`` ``rbac``$``check``(``pi_user``, ``"read_deid_cohort"``)`
+[`library`](https://rdrr.io/r/base/library.html)`(`[`dicomtk.server`](https://lauyeehow1986-hub.github.io/dicomtk.server)`)`` `` ``ctx`` ``<-`` `[`server_create_context`](https://lauyeehow1986-hub.github.io/dicomtk.server/reference/server_create_context.md)`(``base_dir ``=`` `[`tempfile`](https://rdrr.io/r/base/tempfile.html)`(``"srv_"``)``)`` ``pi_user`` ``<-`` `[`server_principal`](https://lauyeehow1986-hub.github.io/dicomtk.server/reference/server_principal.md)`(``user_id ``=`` ``"dr_tan"``, role ``=`` ``"pi"``)`` ``broker_user`` ``<-`` `[`server_principal`](https://lauyeehow1986-hub.github.io/dicomtk.server/reference/server_principal.md)`(``user_id ``=`` ``"hb_01"``, role ``=`` ``"honest_broker"``)`` `` ``# RBAC enforces strict separation of duties`` `[`check_permission`](https://lauyeehow1986-hub.github.io/dicomtk.server/reference/check_permission.md)`(``pi_user``, ``"cohort:read_deid"``)`
 
 ### 2. Walled-Off Honest-Broker Enclave & Two-Person Re-Identification
 
-`enclave`` ``<-`` ``dicom_broker_enclave``$``new``(``key_secret ``=`` ``"enclave-root-secret"``, audit_log ``=`` ``audit``)`` `` ``# Only 'honest_broker' can ingest raw identifiers into the enclave`` ``enclave``$``ingest_study``(``broker_user``, study_uid ``=`` ``"1.2.840.10008.1"``, patient_id ``=`` ``"P-9001"``)`` `` ``# Two-person (honest_broker + dpo) dual approval required to re-identify a pseudonym`` ``wf`` ``<-`` ``dicom_reid_workflow``$``new``(``enclave ``=`` ``enclave``, audit_log ``=`` ``audit``)`
+`enclave`` ``<-`` `[`broker_enclave_init`](https://lauyeehow1986-hub.github.io/dicomtk.server/reference/broker_enclave_init.md)`(`[`file.path`](https://rdrr.io/r/base/file.path.html)`(``ctx``$``base_dir``, ``"enclave"``)``)`` `` ``# Two-person (honest_broker + dpo) dual approval required to re-identify a pseudonym`` ``# req <- reid_request(ctx, pi_user, study_uid = "1.2.840.10008.1", reason = "Safety follow-up")`` ``# reid_approve(ctx, broker_user, req$request_id)`` ``# reid_disclose(ctx, dpo_user, req$request_id)`
 
 ### 3. SMART on FHIR v2 EHR-Launch (RFC 7636 PKCE S256)
 
-`pkce`` ``<-`` ``smart_pkce_generate``(``)`` ``auth_url`` ``<-`` `[`smart_build_auth_url`](https://lauyeehow1986-hub.github.io/dicomtk.server/reference/smart_build_auth_url.md)`(`` `` authorize_endpoint ``=`` ``"https://ehr.hospital.org/oauth2/authorize"``,`` `` client_id ``=`` ``"dicomtk_samd_app"``,`` `` redirect_uri ``=`` ``"https://samd.hospital.org/callback"``,`` `` pkce ``=`` ``pkce``,`` `` launch ``=`` ``"ehr-launch-ctx-123"`` ``)`
+`pkce`` ``<-`` `[`smart_pkce_challenge`](https://lauyeehow1986-hub.github.io/dicomtk.server/reference/smart_pkce_challenge.md)`(``)`` ``auth_url`` ``<-`` `[`smart_build_auth_url`](https://lauyeehow1986-hub.github.io/dicomtk.server/reference/smart_build_auth_url.md)`(`` `` authorize_endpoint ``=`` ``"https://ehr.hospital.org/oauth2/authorize"``,`` `` client_id ``=`` ``"dicomtk_samd_app"``,`` `` redirect_uri ``=`` ``"https://samd.hospital.org/callback"``,`` `` pkce ``=`` ``pkce``,`` `` launch ``=`` ``"ehr-launch-ctx-123"`` ``)`
 
 ### 4. IHE AIW-I Workitems, IHE AIR Bundles & Dual-Gated SaMD Write-Back
 
-`# IHE AIW-I UPS-RS workitem state machine`` ``wi`` ``<-`` ``ihe_aiwi_workitem``$``new``(``study_uid ``=`` ``"1.2.840.10008.1"``, ae_title ``=`` ``"AI_ENGINE"``)`` ``wi``$``claim``(``"AI_ENGINE"``)`` ``wi``$``complete``(``)`` `` ``# Dual-gated clinical write-back: 'final' requires verified_by clinician sign-off`` ``wb`` ``<-`` ``dicom_clinical_writeback``$``new``(``audit_log ``=`` ``audit``)`
+`# IHE AIW-I UPS-RS workitem state machine`` ``wi`` ``<-`` `[`ihe_aiw_workitem`](https://lauyeehow1986-hub.github.io/dicomtk.server/reference/ihe_aiw_workitem.md)`(``study_uid ``=`` ``"1.2.840.10008.1"``, ae_title ``=`` ``"AI_ENGINE"``)`` ``wi`` ``<-`` `[`ihe_aiw_transition`](https://lauyeehow1986-hub.github.io/dicomtk.server/reference/ihe_aiw_transition.md)`(``wi``, ``"IN PROGRESS"``)`` ``wi`` ``<-`` `[`ihe_aiw_transition`](https://lauyeehow1986-hub.github.io/dicomtk.server/reference/ihe_aiw_transition.md)`(``wi``, ``"COMPLETED"``)`` `` ``# Dual-gated clinical write-back: 'final' requires verified_by clinician sign-off`` `[`clinical_writeback_enabled`](https://lauyeehow1986-hub.github.io/dicomtk.server/reference/clinical_writeback_enabled.md)`(``)`
 
 ### 5. CycloneDX 1.5 SBOM, STRIDE Threat Model & REST / Shiny Server
 
-`sbom`` ``<-`` ``generate_cyclonedx_sbom``(``)`` ``stride`` ``<-`` ``dicom_stride_threat_model``(``)`` `` ``# Launch plumber REST API (/health, /sbom, /threat-model, /audit) or Shiny portal`` ``# dicom_server_app(...)`
+`sbom`` ``<-`` `[`server_generate_sbom`](https://lauyeehow1986-hub.github.io/dicomtk.server/reference/server_generate_sbom.md)`(``)`` ``stride`` ``<-`` `[`server_threat_model`](https://lauyeehow1986-hub.github.io/dicomtk.server/reference/server_threat_model.md)`(``)`` `` ``# Launch plumber REST API (/health, /sbom, /threat-model, /audit) or Shiny portal`` ``# server_plumber_api(ctx)`
 
 ### 6. Documentation
 
@@ -53,6 +53,9 @@ Browse the full reference at
 # Package index
 
 ## RBAC & Audit Trail
+
+8-role OIDC/Keycloak RBAC, JWT verification, project registries, and
+tamper-evident SHA-256 hash-chained audit logs.
 
 - [`server_roles()`](https://lauyeehow1986-hub.github.io/dicomtk.server/reference/server_roles.md)
   :
@@ -94,6 +97,9 @@ Browse the full reference at
 
 ## Honest-Broker Custody & Two-Person Re-Identification
 
+Walled-off honest-broker key enclave and dual-approved (honest_broker +
+dpo) re-identification workflow.
+
 - [`broker_enclave_init()`](https://lauyeehow1986-hub.github.io/dicomtk.server/reference/broker_enclave_init.md)
   : Initialize a Walled-Off Honest-Broker Key & Crosswalk Custody
   Enclave
@@ -111,6 +117,9 @@ Browse the full reference at
   Request
 
 ## Async Jobs, Segmentation QA & Active Learning
+
+Asynchronous mirai job queues, 3D segmentation QA (Dice, HD95, surface
+Dice), and MONAI Label active learning.
 
 - [`job_queue_init()`](https://lauyeehow1986-hub.github.io/dicomtk.server/reference/job_queue_init.md)
   : Initialize an Asynchronous or Synchronous Job Queue
@@ -140,6 +149,9 @@ Browse the full reference at
   : Submit a Completed Annotation Label to the Active Learning Pool
 
 ## Event Routing, REST API & Shiny Portal
+
+Event-driven routing rules, plumber REST API endpoints, and Shiny +
+Cornerstone3D/NiiVue clinician portal.
 
 - [`routing_rule()`](https://lauyeehow1986-hub.github.io/dicomtk.server/reference/routing_rule.md)
   : Define an Event-Driven Study Routing Rule
@@ -176,6 +188,9 @@ Browse the full reference at
   Build the `shiny` Server Function for `dicomtk.server`
 
 ## SMART on FHIR, IHE AI & Security
+
+SMART on FHIR v2 PKCE S256 EHR-launch, IHE AIW-I/AIR workflows,
+dual-gated SaMD write-back, CycloneDX 1.5 SBOM, and STRIDE threat model.
 
 - [`smart_discover_config()`](https://lauyeehow1986-hub.github.io/dicomtk.server/reference/smart_discover_config.md)
   : Discover SMART on FHIR v2 Configuration

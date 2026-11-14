@@ -1,4 +1,4 @@
-# dicomtk.server: Multi-User Research Server, Honest Broker Custody & Clinical EHR Integration
+# dicomtk.server: Multi-User Research Server, Honest Broker Custody & Clinical EHR Integration <img src="man/figures/logo.png" align="right" height="150" alt="dicomtk.server hex logo" />
 
 <!-- badges: start -->
 [![R-universe](https://lauyeehow1986-hub.r-universe.dev/badges/:name)](https://lauyeehow1986-hub.r-universe.dev)

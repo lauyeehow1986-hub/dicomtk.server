@@ -6,6 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Multi-User Server, Honest Broker Custody, and Event Routing for DICOM • dicomtk.server</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" sizes="any" href="favicon.ico">
+<link rel="manifest" href="site.webmanifest">
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -13,6 +18,7 @@
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Multi-User Server, Honest Broker Custody, and Event Routing for DICOM">
 <meta name="description" content="Multi-user research server and honest-broker custody satellite for dicomtk. Provides eight-role OpenID Connect (OIDC) and Keycloak role-based access control (RBAC), a tamper-evident SHA-256 hash-chained JSONL audit trail, a walled-off honest-broker key and crosswalk custody enclave with two-person (honest_broker and dpo) re-identification approval, mirai asynchronous job queues, 3D segmentation quality assurance (Dice, HD95, and surface Dice), MONAI Label active learning, event-driven routing, and plumber REST and shiny clinician portal interfaces.">
 <meta property="og:description" content="Multi-user research server and honest-broker custody satellite for dicomtk. Provides eight-role OpenID Connect (OIDC) and Keycloak role-based access control (RBAC), a tamper-evident SHA-256 hash-chained JSONL audit trail, a walled-off honest-broker key and crosswalk custody enclave with two-person (honest_broker and dpo) re-identification approval, mirai asynchronous job queues, 3D segmentation quality assurance (Dice, HD95, and surface Dice), MONAI Label active learning, event-driven routing, and plumber REST and shiny clinician portal interfaces.">
+<meta property="og:image" content="https://lauyeehow1986-hub.github.io/dicomtk.server/logo.png">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -34,6 +40,17 @@
 <li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link" href="articles/index.html">Articles</a></li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-ecosystem" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Ecosystem</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-ecosystem">
+<li><a class="external-link dropdown-item" href="https://lauyeehow1986-hub.github.io/dicomtk/">dicomtk (Core &amp; WSI)</a></li>
+    <li><a class="external-link dropdown-item" href="https://lauyeehow1986-hub.github.io/dicomtk.ai/">dicomtk.ai (AI, Radiomics &amp; NLP)</a></li>
+    <li><a class="dropdown-item" href="https://lauyeehow1986-hub.github.io/dicomtk.server/">dicomtk.server (Server, Custody &amp; EHR)</a></li>
+    <li><a class="external-link dropdown-item" href="https://lauyeehow1986-hub.github.io/dicomtk.fl/">dicomtk.fl (Federated Learning &amp; DP)</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><a class="external-link dropdown-item" href="https://lauyeehow1986-hub.r-universe.dev">R-Universe Registry</a></li>
+  </ul>
+</li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
@@ -48,8 +65,10 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="dicomtkserver-multi-user-research-server-honest-broker-custody--clinical-ehr-integration">dicomtk.server: Multi-User Research Server, Honest Broker Custody &amp; Clinical EHR Integration<a class="anchor" aria-label="anchor" href="#dicomtkserver-multi-user-research-server-honest-broker-custody--clinical-ehr-integration"></a>
-</h1></div>
+<div class="page-header">
+<img src="logo.png" class="logo" alt=""><h1 id="dicomtkserver-multi-user-research-server-honest-broker-custody--clinical-ehr-integration-">dicomtk.server: Multi-User Research Server, Honest Broker Custody &amp; Clinical EHR Integration <a class="anchor" aria-label="anchor" href="#dicomtkserver-multi-user-research-server-honest-broker-custody--clinical-ehr-integration-"></a>
+</h1>
+</div>
 <!-- badges: start -->
 
 <p><code>dicomtk.server</code> (<code>1.0.0</code>) is the multi-user governance, honest-broker custody, and clinical deployment server for <a href="https://lauyeehow1986-hub.github.io/dicomtk/" class="external-link"><code>dicomtk</code></a>. It provides 8-role OIDC/Keycloak RBAC, a tamper-evident SHA-256 hash-chained JSONL audit log, a walled-off honest-broker key enclave with two-person (<code>honest_broker</code> + <code>dpo</code>) re-identification, <code>mirai</code> async QA (<code>Dice</code>, <code>HD95</code>, surface <code>Dice</code>), MONAI Label active learning, <code>plumber</code> REST + <code>shiny</code> clinician portals, <strong>SMART on FHIR v2 EHR-launch (PKCE S256)</strong>, <strong>IHE AIW-I / AIR</strong>, <strong>dual-gated SaMD clinical write-back</strong>, and <strong>CycloneDX 1.5 SBOM + STRIDE threat modeling</strong>.</p>
@@ -145,6 +164,10 @@
 <ul class="list-unstyled">
 <li><a href="https://github.com/lauyeehow1986-hub/dicomtk.server/" class="external-link">Browse source code</a></li>
 <li><a href="https://github.com/lauyeehow1986-hub/dicomtk.server/issues" class="external-link">Report a bug</a></li>
+<li><a href="https://lauyeehow1986-hub.r-universe.dev" class="external-link">Install from R-Universe</a></li>
+<li><a href="https://lauyeehow1986-hub.github.io/dicomtk/" class="external-link">dicomtk (Core &amp; WSI)</a></li>
+<li><a href="https://lauyeehow1986-hub.github.io/dicomtk.ai/" class="external-link">dicomtk.ai (AI &amp; Radiomics)</a></li>
+<li><a href="https://lauyeehow1986-hub.github.io/dicomtk.fl/" class="external-link">dicomtk.fl (Federated Learning)</a></li>
 </ul>
 </div>
 
