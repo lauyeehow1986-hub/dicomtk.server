@@ -54,6 +54,21 @@ reference:
       - server_shiny_ui
       - server_shiny_server
 
+  - title: SMART on FHIR, IHE AI & Security
+    contents:
+      - smart_discover_config
+      - smart_pkce_challenge
+      - smart_build_auth_url
+      - smart_exchange_token
+      - smart_pull_patient_context
+      - ihe_aiw_workitem
+      - ihe_aiw_transition
+      - ihe_air_bundle
+      - clinical_writeback_enabled
+      - clinical_writeback_execute
+      - server_generate_sbom
+      - server_threat_model
+
 articles:
   - title: Guides
     contents:

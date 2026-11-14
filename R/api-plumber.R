@@ -74,7 +74,7 @@ server_handle_request <- function(ctx,
   method <- toupper(as.character(method))
 
   if (identical(method, "GET") && identical(path, "/health")) {
-    return(list(status = 200L, body = list(status = "ok", service = "dicomtk.server", version = "0.1.0")))
+    return(list(status = 200L, body = list(status = "ok", service = "dicomtk.server", version = "1.0.0")))
   }
 
   tok <- .extract_bearer(headers)
@@ -128,6 +128,20 @@ server_handle_request <- function(ctx,
     return(list(status = 200L, body = audit_verify(ctx$logger)))
   }
 
+  if (identical(method, "GET") && identical(path, "/sbom")) {
+    if (!check_permission(principal, "audit_read", throw = FALSE)) {
+      return(list(status = 403L, body = list(error = "Forbidden: audit_read required.")))
+    }
+    return(list(status = 200L, body = server_generate_sbom("dicomtk.server")))
+  }
+
+  if (identical(method, "GET") && identical(path, "/threat-model")) {
+    if (!check_permission(principal, "audit_read", throw = FALSE)) {
+      return(list(status = 403L, body = list(error = "Forbidden: audit_read required.")))
+    }
+    return(list(status = 200L, body = list(threats = server_threat_model())))
+  }
+
   list(status = 404L, body = list(error = paste("Not found:", method, path)))
 }
 
@@ -157,5 +171,7 @@ server_plumber_api <- function(ctx) {
   pr$handle("POST", "/projects", function(req, res) dispatch(req, res, "POST", "/projects"))
   pr$handle("GET", "/qa", function(req, res) dispatch(req, res, "GET", "/qa"))
   pr$handle("GET", "/audit/verify", function(req, res) dispatch(req, res, "GET", "/audit/verify"))
+  pr$handle("GET", "/sbom", function(req, res) dispatch(req, res, "GET", "/sbom"))
+  pr$handle("GET", "/threat-model", function(req, res) dispatch(req, res, "GET", "/threat-model"))
   pr
 }

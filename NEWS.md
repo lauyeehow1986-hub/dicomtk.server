@@ -1,3 +1,10 @@
+# dicomtk.server 1.0.0
+
+* SMART on FHIR v2 EHR-launch (`smart_discover_config()`, `smart_pkce_challenge()`, `smart_build_auth_url()`, `smart_exchange_token()`, `smart_pull_patient_context()`) with RFC 7636 S256 PKCE, CSRF state validation, and honest-broker enclave pseudonymisation.
+* IHE AIW-I UPS-RS workitem state machine (`ihe_aiw_workitem()`, `ihe_aiw_transition()`) and IHE AIR conformance bundle (`ihe_air_bundle()`).
+* Dual-gated SaMD clinical write-back (`clinical_writeback_enabled()`, `clinical_writeback_execute()`) requiring explicit server opt-in, `"clinical_writeback"` RBAC permission, and audit trail logging.
+* CycloneDX 1.5 SBOM generator (`server_generate_sbom()`), 6-category STRIDE threat model (`server_threat_model()`), REST `/sbom` & `/threat-model` endpoints, and non-root `inst/docker/Dockerfile`.
+
 # dicomtk.server 0.1.0
 
 * Initial release of the `dicomtk.server` multi-user server and honest-broker custody satellite:

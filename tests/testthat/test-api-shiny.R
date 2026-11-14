@@ -40,6 +40,15 @@ testthat::test_that("server_create_context and server_handle_request enforce JWT
     headers = list(Authorization = paste("Bearer", adm_tok))
   )
   testthat::expect_equal(listed$status, 200L)
+
+  sbom_res <- server_handle_request(
+    ctx,
+    method = "GET",
+    path = "/sbom",
+    headers = list(Authorization = paste("Bearer", adm_tok))
+  )
+  testthat::expect_equal(sbom_res$status, 200L)
+  testthat::expect_equal(sbom_res$body$bomFormat, "CycloneDX")
 })
 
 testthat::test_that("server_viewer_html, plumber API, and shiny UI/server construct cleanly", {

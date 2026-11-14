@@ -1,6 +1,6 @@
 Package: dicomtk.server
 Title: Multi-User Server, Honest Broker Custody, and Event Routing for 'DICOM'
-Version: 0.1.0
+Version: 1.0.0
 Authors@R: c(
     person("Yee How", "Lau", email = "lauyeehow1986@gmail.com",
            role = c("aut", "cre", "cph")))
