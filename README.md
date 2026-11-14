@@ -34,30 +34,27 @@ remotes::install_github("lauyeehow1986-hub/dicomtk.server")
 ```r
 library(dicomtk.server)
 
-audit <- dicom_audit_log$new(tempfile(fileext = ".jsonl"))
-rbac <- dicom_rbac_policy$new()
-
-pi_user <- list(user_id = "dr_tan", role = "pi")
-broker_user <- list(user_id = "hb_01", role = "honest_broker")
+ctx <- server_create_context(base_dir = tempfile("srv_"))
+pi_user <- server_principal(user_id = "dr_tan", role = "pi")
+broker_user <- server_principal(user_id = "hb_01", role = "honest_broker")
 
 # RBAC enforces strict separation of duties
-rbac$check(pi_user, "read_deid_cohort")
+check_permission(pi_user, "cohort:read_deid")
 ```
 
 ### 2. Walled-Off Honest-Broker Enclave & Two-Person Re-Identification
 ```r
-enclave <- dicom_broker_enclave$new(key_secret = "enclave-root-secret", audit_log = audit)
-
-# Only 'honest_broker' can ingest raw identifiers into the enclave
-enclave$ingest_study(broker_user, study_uid = "1.2.840.10008.1", patient_id = "P-9001")
+enclave <- broker_enclave_init(file.path(ctx$base_dir, "enclave"))
 
 # Two-person (honest_broker + dpo) dual approval required to re-identify a pseudonym
-wf <- dicom_reid_workflow$new(enclave = enclave, audit_log = audit)
+# req <- reid_request(ctx, pi_user, study_uid = "1.2.840.10008.1", reason = "Safety follow-up")
+# reid_approve(ctx, broker_user, req$request_id)
+# reid_disclose(ctx, dpo_user, req$request_id)
 ```
 
 ### 3. SMART on FHIR v2 EHR-Launch (RFC 7636 PKCE S256)
 ```r
-pkce <- smart_pkce_generate()
+pkce <- smart_pkce_challenge()
 auth_url <- smart_build_auth_url(
   authorize_endpoint = "https://ehr.hospital.org/oauth2/authorize",
   client_id = "dicomtk_samd_app",
@@ -70,21 +67,21 @@ auth_url <- smart_build_auth_url(
 ### 4. IHE AIW-I Workitems, IHE AIR Bundles & Dual-Gated SaMD Write-Back
 ```r
 # IHE AIW-I UPS-RS workitem state machine
-wi <- ihe_aiwi_workitem$new(study_uid = "1.2.840.10008.1", ae_title = "AI_ENGINE")
-wi$claim("AI_ENGINE")
-wi$complete()
+wi <- ihe_aiw_workitem(study_uid = "1.2.840.10008.1", ae_title = "AI_ENGINE")
+wi <- ihe_aiw_transition(wi, "IN PROGRESS")
+wi <- ihe_aiw_transition(wi, "COMPLETED")
 
 # Dual-gated clinical write-back: 'final' requires verified_by clinician sign-off
-wb <- dicom_clinical_writeback$new(audit_log = audit)
+clinical_writeback_enabled()
 ```
 
 ### 5. CycloneDX 1.5 SBOM, STRIDE Threat Model & REST / Shiny Server
 ```r
-sbom <- generate_cyclonedx_sbom()
-stride <- dicom_stride_threat_model()
+sbom <- server_generate_sbom()
+stride <- server_threat_model()
 
 # Launch plumber REST API (/health, /sbom, /threat-model, /audit) or Shiny portal
-# dicom_server_app(...)
+# server_plumber_api(ctx)
 ```
 
 ### 6. Documentation
