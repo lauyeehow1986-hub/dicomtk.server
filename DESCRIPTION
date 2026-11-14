@@ -1,0 +1,45 @@
+Package: dicomtk.server
+Title: Multi-User Server, Honest Broker Custody, and Event Routing for 'DICOM'
+Version: 0.1.0
+Authors@R: c(
+    person("Yee How", "Lau", email = "lauyeehow1986@gmail.com",
+           role = c("aut", "cre", "cph")))
+Description: Multi-user research server and honest-broker custody satellite
+    for 'dicomtk'. Provides eight-role OpenID Connect ('OIDC') and 'Keycloak'
+    role-based access control ('RBAC'), a tamper-evident SHA-256 hash-chained
+    JSONL audit trail, a walled-off honest-broker key and crosswalk custody
+    enclave with two-person ('honest_broker' and 'dpo') re-identification
+    approval, 'mirai' asynchronous job queues, 3D segmentation quality
+    assurance ('Dice', 'HD95', and surface 'Dice'), 'MONAI Label' active
+    learning, event-driven routing, and 'plumber' REST and 'shiny' clinician
+    portal interfaces.
+License: GPL (>= 2)
+URL: https://github.com/lauyeehow1986-hub/dicomtk.server
+BugReports: https://github.com/lauyeehow1986-hub/dicomtk.server/issues
+Depends:
+    R (>= 4.1.0)
+Imports:
+    dicomtk (>= 0.5.0),
+    httr2 (>= 1.0.0),
+    jsonlite (>= 1.8.0),
+    tibble (>= 3.0.0),
+    cli (>= 3.6.0),
+    rlang (>= 1.1.0),
+    stats,
+    utils
+Suggests:
+    dicomtk.ai (>= 0.1.0),
+    plumber (>= 1.2.0),
+    shiny (>= 1.8.0),
+    mirai (>= 1.0.0),
+    DBI (>= 1.2.0),
+    duckdb (>= 1.0.0),
+    testthat (>= 3.0.0),
+    withr,
+    knitr,
+    rmarkdown
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+VignetteBuilder: knitr
+Config/testthat/edition: 3
