@@ -1,0 +1,52 @@
+---
+title: "Honest-Broker Custody, Two-Person Re-Identification & Server Workflows"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Honest-Broker Custody, Two-Person Re-Identification & Server Workflows}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Overview
+
+`dicomtk.server` provides multi-user research server orchestration and
+walled-off honest-broker key custody for clinical DICOM studies:
+
+1. **8-Role OIDC/Keycloak RBAC**: `pi`, `coordinator`, `annotator`,
+   `auditor`, `admin`, `site_admin`, `honest_broker`, and `dpo`.
+2. **SHA-256 Hash-Chained Audit Log**: Every de-identification, re-ID
+   request, approval, disclosure, QA review, and job submission is appended to a
+   tamper-evident JSONL ledger.
+3. **Walled-Off Custody Enclave**: Master keys and patient-identity crosswalks
+   live inside an isolated closure inaccessible to `pi` and non-broker roles.
+4. **Two-Person Re-Identification**: Requires distinct `honest_broker` and
+   `dpo` principals to approve a request before time-limited disclosure.
+
+## Quick Walkthrough
+
+```{r setup}
+library(dicomtk.server)
+
+tmp_dir <- tempfile("dicomtk_vig_")
+ctx <- server_create_context(work_dir = tmp_dir, jwt_secret = "vignette-secret")
+
+adm <- server_principal("adm-1", roles = "admin", project_ids = "*")
+pi <- server_principal("pi-1", roles = "pi", project_ids = "nsclc-01")
+hb <- server_principal("hb-1", roles = "honest_broker", project_ids = "*")
+dpo <- server_principal("dpo-1", roles = "dpo", project_ids = "*")
+
+project_create(ctx$projects, "nsclc-01", title = "NSCLC Radiomics")
+project_list(ctx$projects)
+
+# Verify audit chain integrity
+audit_verify(ctx$logger)
+
+unlink(tmp_dir, recursive = TRUE, force = TRUE)
+```

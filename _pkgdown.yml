@@ -1,0 +1,60 @@
+url: https://lauyeehow1986-hub.github.io/dicomtk.server
+template:
+  bootstrap: 5
+
+reference:
+  - title: RBAC & Audit Trail
+    contents:
+      - server_roles
+      - server_principal
+      - check_permission
+      - mint_test_jwt
+      - verify_bearer_token
+      - audit_logger
+      - audit_append
+      - audit_verify
+      - project_registry_init
+      - project_create
+      - project_get
+      - project_list
+
+  - title: Honest-Broker Custody & Two-Person Re-Identification
+    contents:
+      - broker_enclave_init
+      - broker_deid_study
+      - broker_lookup_crosswalk
+      - reid_request
+      - reid_approve
+      - reid_disclose
+
+  - title: Async Jobs, Segmentation QA & Active Learning
+    contents:
+      - job_queue_init
+      - job_submit
+      - job_status
+      - job_result
+      - compute_seg_qa
+      - qa_queue_init
+      - qa_enqueue
+      - qa_submit_review
+      - qa_list
+      - active_learning_pool_init
+      - active_learning_add_candidate
+      - active_learning_next
+      - active_learning_submit
+
+  - title: Event Routing, REST API & Shiny Portal
+    contents:
+      - routing_rule
+      - routing_execute
+      - server_create_context
+      - server_handle_request
+      - server_plumber_api
+      - server_viewer_html
+      - server_shiny_ui
+      - server_shiny_server
+
+articles:
+  - title: Guides
+    contents:
+      - honest_broker_and_server
