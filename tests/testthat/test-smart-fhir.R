@@ -12,6 +12,10 @@ testthat::test_that("SMART on FHIR v2 PKCE, discovery, CSRF state check, and enc
   pkce1 <- smart_pkce_challenge("dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk")
   pkce2 <- smart_pkce_challenge("dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk")
   testthat::expect_equal(pkce1$code_challenge, pkce2$code_challenge)
+  if (requireNamespace("openssl", quietly = TRUE)) {
+    testthat::expect_equal(pkce1$code_challenge, "E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM")
+  }
+  testthat::expect_error(smart_pkce_challenge(paste(rep("a b!", 15), collapse = "")), "RFC 7636")
   testthat::expect_equal(pkce1$code_challenge_method, "S256")
   testthat::expect_true(nchar(pkce1$code_verifier) >= 43L)
 

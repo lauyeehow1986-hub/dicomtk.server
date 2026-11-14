@@ -56,6 +56,11 @@ clinical_writeback_execute <- function(ctx,
   }
   check_permission(principal, "clinical_writeback", project_id = project_id, throw = TRUE)
 
+  rpt_status <- as.character(air_bundle$diagnostic_report$status %||% "preliminary")
+  if (identical(rpt_status, "final") && is.null(air_bundle$diagnostic_report$verified_by)) {
+    cli::cli_abort("SaMD safeguard: AI DiagnosticReport cannot be written back with status {.val final} without clinician {.field verified_by} sign-off.")
+  }
+
   if (!isTRUE(dry_run) && !is.null(fhir_base_url) && nzchar(fhir_base_url)) {
     base <- sub("/+$", "", fhir_base_url)
     httr2::request(paste0(base, "/DiagnosticReport")) |>

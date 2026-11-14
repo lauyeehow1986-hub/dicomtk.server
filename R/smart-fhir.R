@@ -71,8 +71,8 @@ smart_pkce_challenge <- function(verifier = NULL) {
     verifier <- .b64url_encode(raw_bytes)
   }
   srv_check_scalar_chr(verifier, "verifier")
-  if (nchar(verifier) < 43L || nchar(verifier) > 128L) {
-    cli::cli_abort("RFC 7636 {.arg verifier} must be between 43 and 128 characters.")
+  if (nchar(verifier) < 43L || nchar(verifier) > 128L || !grepl("^[A-Za-z0-9._~-]+$", verifier)) {
+    cli::cli_abort("RFC 7636 {.arg verifier} must be 43-128 unreserved URI characters ([A-Za-z0-9._~-]).")
   }
   digest_hex <- srv_hash_hex(verifier)
   challenge <- .b64url_encode(.hex_to_raw(digest_hex))
@@ -159,8 +159,8 @@ smart_exchange_token <- function(config,
                                  mock_response = NULL) {
   srv_check_scalar_chr(code, "code")
   srv_check_scalar_chr(code_verifier, "code_verifier")
-  if (nchar(code_verifier) < 43L) {
-    cli::cli_abort("Invalid PKCE {.arg code_verifier} length.")
+  if (nchar(code_verifier) < 43L || nchar(code_verifier) > 128L || !grepl("^[A-Za-z0-9._~-]+$", code_verifier)) {
+    cli::cli_abort("Invalid PKCE {.arg code_verifier}: must be 43-128 RFC 7636 unreserved characters.")
   }
   if (!is.null(expected_state) && !identical(as.character(expected_state), as.character(received_state))) {
     cli::cli_abort("CSRF state mismatch during SMART token exchange.")
@@ -218,6 +218,7 @@ smart_pull_patient_context <- function(session,
   if (!inherits(session, "dicom_smart_session")) {
     cli::cli_abort("{.arg session} must be a {.cls dicom_smart_session} object.")
   }
+  srv_check_scalar_chr(session$patient_id, "session$patient_id")
   check_permission(principal, "deid_ingest", project_id = project_id, throw = TRUE)
   priv <- .broker_priv(enclave)
 

@@ -37,4 +37,18 @@ testthat::test_that("clinical write-back enforces dual-gate SaMD feature flag, R
   testthat::expect_true(audit_verify(ctx$logger)$passed)
   lines <- readLines(ctx$logger$log_path, warn = FALSE)
   testthat::expect_true(any(grepl("clinical_writeback", lines, fixed = TRUE)))
+
+  # Unverified AI report with status = 'final' must be blocked by SaMD guardrail
+  air_final <- ihe_air_bundle(
+    study_uid = "1.2.3.4",
+    model_name = "TotalSegmentator",
+    model_version = "2.4.0",
+    dicom_artifact_type = "SEG",
+    dicom_sop_uid = "1.2.3.99",
+    fhir_report = list(status = "final")
+  )
+  testthat::expect_error(
+    clinical_writeback_execute(ctx, pi_p, project_id = "proj-1", air_bundle = air_final, dry_run = TRUE),
+    "verified_by"
+  )
 })
