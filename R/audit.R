@@ -94,7 +94,9 @@ audit_verify <- function(logger) {
   expected_prev <- paste(rep("0", 64L), collapse = "")
   for (i in seq_along(lines)) {
     rec <- tryCatch(jsonlite::fromJSON(lines[i], simplifyVector = FALSE), error = function(e) NULL)
-    if (!is.list(rec) || is.null(rec$entry_hash) || !identical(as.character(rec$prev_hash), expected_prev)) {
+    if (!is.list(rec) || is.null(rec$entry_hash) ||
+        !identical(as.integer(rec$seq), as.integer(i)) ||
+        !identical(as.character(rec$prev_hash), expected_prev)) {
       return(list(passed = FALSE, n_entries = length(lines), corrupted_line = as.integer(i)))
     }
     recorded_hash <- as.character(rec$entry_hash)

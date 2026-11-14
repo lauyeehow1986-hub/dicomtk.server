@@ -174,7 +174,15 @@ verify_bearer_token <- function(token,
   if (length(parts) != 3L) {
     cli::cli_abort("Malformed bearer JWT token.")
   }
-  expected_sig <- srv_hmac_hex(secret %||% "dicomtk-test-secret", paste0(parts[1L], ".", parts[2L]))
+  eff_secret <- secret %||% "dicomtk-test-secret"
+  if (!is.character(eff_secret) || length(eff_secret) != 1L || !nzchar(eff_secret)) {
+    cli::cli_abort("JWT verification secret must be a non-empty string.")
+  }
+  hdr <- tryCatch(jsonlite::fromJSON(.b64url_decode(parts[1L]), simplifyVector = FALSE), error = function(e) NULL)
+  if (!is.list(hdr) || !identical(hdr$alg, "HS256")) {
+    cli::cli_abort("Unsupported or missing JWT alg header (expected HS256).")
+  }
+  expected_sig <- srv_hmac_hex(eff_secret, paste0(parts[1L], ".", parts[2L]))
   if (!identical(parts[3L], expected_sig)) {
     cli::cli_abort("Invalid JWT signature.")
   }

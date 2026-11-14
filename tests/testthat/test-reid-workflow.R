@@ -66,4 +66,17 @@ testthat::test_that("two-person re-identification workflow enforces broker + dpo
   testthat::expect_true(audit_verify(aud_log)$passed)
   lines <- readLines(aud_log$log_path, warn = FALSE)
   testthat::expect_true(any(grepl("reid_disclose", lines, fixed = TRUE)))
+
+  # Adversarial: PI authorized on proj-other cannot spoof project_id to request re-ID of proj-reid pseudonym
+  pi_other <- server_principal("pi-other", roles = "pi", project_ids = "proj-other")
+  testthat::expect_error(
+    reid_request(
+      enclave = enc,
+      principal = pi_other,
+      project_id = "proj-other",
+      pseudonym_id = deid_res$pseudonym_id,
+      reason = "cross_project_spoof"
+    ),
+    "mismatch"
+  )
 })

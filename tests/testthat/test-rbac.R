@@ -34,4 +34,11 @@ test_that("8-role OIDC RBAC matrix enforces strict capability boundaries and JWT
   # Expired token must fail
   exp_tok <- mint_test_jwt(user_id = "dr_tan", roles = "pi", secret = "test-hmac-key", expires_in = -10)
   expect_error(verify_bearer_token(exp_tok, secret = "test-hmac-key"), "expired")
+
+  # Empty secret and alg:none header must fail
+  expect_error(verify_bearer_token(tok, secret = ""), "non-empty")
+  none_hdr <- dicomtk.server:::.b64url_encode('{"alg":"none","typ":"JWT"}')
+  parts <- strsplit(tok, ".", fixed = TRUE)[[1L]]
+  forged_none <- paste0(none_hdr, ".", parts[2L], ".", dicomtk.server:::srv_hmac_hex("test-hmac-key", paste0(none_hdr, ".", parts[2L])))
+  expect_error(verify_bearer_token(forged_none, secret = "test-hmac-key"), "HS256")
 })

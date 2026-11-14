@@ -28,6 +28,10 @@ reid_request <- function(enclave,
   if (!exists(pseudonym_id, envir = priv$crosswalk, inherits = FALSE)) {
     cli::cli_abort("Pseudonym {.val {pseudonym_id}} not found in enclave crosswalk.")
   }
+  cw <- get(pseudonym_id, envir = priv$crosswalk, inherits = FALSE)
+  if (!identical(as.character(cw$project_id), as.character(project_id))) {
+    cli::cli_abort("Project scope mismatch: pseudonym {.val {pseudonym_id}} does not belong to project {.val {project_id}}.")
+  }
 
   req_id <- paste0("reid_", substr(srv_hash_hex(paste0(pseudonym_id, Sys.time(), stats::runif(1L))), 1L, 12L))
   req <- list(
@@ -77,10 +81,10 @@ reid_approve <- function(enclave, principal, request_id) {
   }
   req <- get(request_id, envir = priv$reid_requests, inherits = FALSE)
 
-  can_broker <- check_permission(principal, "reid_approve_broker", throw = FALSE)
-  can_dpo <- check_permission(principal, "reid_approve_dpo", throw = FALSE)
+  can_broker <- check_permission(principal, "reid_approve_broker", project_id = req$project_id, throw = FALSE)
+  can_dpo <- check_permission(principal, "reid_approve_dpo", project_id = req$project_id, throw = FALSE)
   if (!can_broker && !can_dpo) {
-    check_permission(principal, "reid_approve_broker", throw = TRUE)
+    check_permission(principal, "reid_approve_broker", project_id = req$project_id, throw = TRUE)
   }
 
   if (req$status == "pending") {
@@ -142,13 +146,13 @@ reid_approve <- function(enclave, principal, request_id) {
 #'   and `expires_at`.
 #' @export
 reid_disclose <- function(enclave, principal, request_id) {
-  check_permission(principal, "reid_disclose", throw = TRUE)
   srv_check_scalar_chr(request_id, "request_id")
   priv <- .broker_priv(enclave)
   if (!exists(request_id, envir = priv$reid_requests, inherits = FALSE)) {
     cli::cli_abort("Re-identification request {.val {request_id}} not found.")
   }
   req <- get(request_id, envir = priv$reid_requests, inherits = FALSE)
+  check_permission(principal, "reid_disclose", project_id = req$project_id, throw = TRUE)
 
   if (!identical(req$status, "approved")) {
     cli::cli_abort("Re-identification request {.val {request_id}} is not approved (current status: {.val {req$status}}).")
