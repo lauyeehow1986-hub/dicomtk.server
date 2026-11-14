@@ -59,11 +59,11 @@ server_roles <- function() {
 }
 
 .srv_role_permissions <- list(
-  pi = c("project_read", "study_read", "reid_request", "qa_review", "job_submit"),
+  pi = c("project_read", "study_read", "reid_request", "qa_review", "job_submit", "clinical_writeback"),
   coordinator = c("project_read", "study_read", "deid_ingest", "reid_request", "job_submit", "routing_run"),
   annotator = c("project_read", "study_read", "qa_review", "active_learning_submit"),
   auditor = c("project_read", "audit_read"),
-  admin = c("project_create", "project_read", "study_read", "deid_ingest", "qa_review", "audit_read", "job_submit", "routing_run"),
+  admin = c("project_create", "project_read", "study_read", "deid_ingest", "qa_review", "audit_read", "job_submit", "routing_run", "clinical_writeback"),
   site_admin = c("project_read", "federation_approve", "audit_read"),
   honest_broker = c("project_read", "deid_ingest", "reid_request", "reid_approve_broker", "reid_disclose", "audit_read", "routing_run"),
   dpo = c("project_read", "reid_approve_dpo", "audit_read")
